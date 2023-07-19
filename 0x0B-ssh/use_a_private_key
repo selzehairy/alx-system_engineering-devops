@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-# ussing ssh
+
 ssh ubuntu -i ~/.ssh/school

@@ -1,4 +1,36 @@
 #!/usr/bin/env bash
 # Start Apache so as to return a
-# page conatining Hello Holberton
-service apache2 start
+# page conatining Hello Holbert
+
+# Start the Docker container
+docker run -p 8080:80 -d -it holbertonschool/265-0
+
+# Wait for the container to be up and running
+sleep 3
+
+# Connect to the container
+docker exec -it "$(docker ps -q)" /bin/bash
+
+# Check if Apache is running
+service apache2 status || service apache2 start
+
+# Enable Apache to start on boot
+update-rc.d apache2 enable
+
+# Check and edit Apache configuration if needed
+config_file="/etc/apache2/sites-enabled/000-default.conf"
+document_root="/var/www/html"
+
+if grep -q "DocumentRoot $document_root" "$config_file"; then
+  echo "Apache configuration already set correctly."
+else
+  sed -i "s#DocumentRoot /.*#DocumentRoot $document_root#" "$config_file"
+  echo "Apache configuration updated."
+fi
+
+# Create the index.html file
+echo "Hello Holberton" > "$document_root/index.html"
+
+# Exit the container
+exit
+
